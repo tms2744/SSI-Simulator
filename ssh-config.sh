@@ -16,7 +16,7 @@ for((i=1; i<=devices; i++)); do
 
     echo "Host dev$i" >> $sshfile
     # echo "Hostname 172.18.0.$ip" >> $sshfile
-    echo "Hostname 172.18.0.$start_ip" >> $sshfile
+    echo "Hostname 172.50.0.$start_ip" >> $sshfile
     echo "StrictHostKeyChecking no" >> $sshfile
     echo "IdentityFile ~/.ssh/id_rsa" >> $sshfile
     echo "UserKnownHostsFile=/dev/null" >> $sshfile

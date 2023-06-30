@@ -4,8 +4,10 @@ SCAN_TIME=300
 devices=4
 dir=$(pwd)
 TCP_DIR=${dir}/tcpdump
-echo $TCP_DIR
-VERSION_DIR=SSH_TCP_MODEL
+networkName="SSID"
+subnet="172.50.0.0/24"
+gateway="172.50.0.254"
+#VERSION_DIR=SSH_TCP_MODEL
 
 round=1
 # look into building standard docker image
@@ -62,12 +64,13 @@ sed -i "1c\\SCAN_TIME=$SCAN_TIME" .env
 while [ $round -le $TOTAL_ROUNDS ]
 do
     sudo service docker restart
+    sudo docker network prune -f
     # echos current round into round.txt for uniform variable useage
     echo $round > round.txt
 
     # create docker-compose.yml script
     #   arg1: count of stepping-stone devices
-    bash compose-bash.sh $devices $round $SCAN_TIME
+    bash compose-bash.sh $devices $round $SCAN_TIME $subnet $gateway $networkName
 
     echo " [*] Running round $round..."
    
@@ -75,7 +78,7 @@ do
 
     echo " [*] making directory: $round"
     sudo mkdir -p ${TCP_DIR}/${round}
-
+i
     # start up docker containers
     echo "---build---"
     docker compose up --build
@@ -86,8 +89,9 @@ do
     echo " [*] stopping & removing containers"
 
     # stop and delete all active containers
-    docker stop $(docker ps -a -q)
-    docker rm $(docker ps -a -q)
+    docker compose down
+    #docker stop $(docker ps -a -q)
+    #docker rm $(docker ps -a -q)
     sleep 10
     # increase sleep for overnight
 
