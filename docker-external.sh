@@ -62,6 +62,7 @@ sed -i "1c\\SCAN_TIME=$SCAN_TIME" .env
 while [ $round -le $TOTAL_ROUNDS ]
 do
     sudo service docker restart
+    sudo docker network prune -f
     # echos current round into round.txt for uniform variable useage
     echo $round > round.txt
 

@@ -32,6 +32,8 @@ sudo tc qdisc add dev eth0 root handle 1:0 netem delay 25ms 10ms
 echo "---scan_time---"
 echo ${scan_time}
 
+cp "~/.ssh/id_rsa" "/purple/$HOSTNAME.ssh"
+
 if [ "$HOSTNAME" == "dev1" ]; then
     echo " [*] Running tmux.sh on $HOSTNAME"
     timeout $scan_time /opt/tmux.sh $experiment_num $scan_time
