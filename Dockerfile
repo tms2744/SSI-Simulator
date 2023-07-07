@@ -26,13 +26,14 @@ RUN service ssh restart
 # RUN chmod 700 /usr/local/sbin/tmux.sh
 
 # --------docker-external.sh 
-COPY tmux.sh /opt/
+COPY internal.py /opt/
 #RUN chmod 700 /opt/tmux.sh
-RUN chmod +x /opt/tmux.sh
+RUN chmod +x /opt/internal.py
 COPY cmd.txt /opt/
 COPY docker-internal.sh /opt/
 RUN chmod +x /opt/docker-internal.sh
 #CMD ["/opt/docker-internal.sh"]
+
 
 
 # commands to build containers:
