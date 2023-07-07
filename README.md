@@ -6,6 +6,15 @@ This project can create an unlimited size data set on SSID to be using for machi
 
 # Documentation
 
+##IMPORTANT NOTE
+
+**THIS IS THE DEV BRANCH OF THE PROJECT AT ANY GIVEN MOMENT THE CODE MAY NOT BE FUNCTIONING AND THE DOCUMENTATION MAY BE INCOMPLETE
+
+USE WITH CAUTION
+
+AS OF THE MOST RECENT COMMIT THIS README IS OUT OF DATE, THE README WILL BE UPDATEDED SOO TO REFLECT CHANGES TO THE PROJECT STUCTUREi**
+
+
 ## Running
 
 requirements:
@@ -37,6 +46,7 @@ docker-external.sh :
 
 compose-bash.sh : 
 * generates a dynamic docker-compose.yml based on configured options for each experiment
+* Takes the following parameters "compose-batch.sh $devices $round $scan_time $subnet $gateway $network_name
 
 ssh-config.sh
 * generates dynamic ssh config file for each docker container for each experiment

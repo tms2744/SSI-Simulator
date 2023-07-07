@@ -2,6 +2,7 @@
 
 # initalize variables
 # z=$(($1+2))
+#z is the number of devices
 z=$(($1))
 
 echo "---compose-bash.sh---"
@@ -11,6 +12,7 @@ experiment_num=$2
 scan_time=$3
 subnet=$4
 gateway=$5
+
 
 echo "---scan_time---"
 echo ${scan_time}
@@ -55,7 +57,11 @@ write_entry () {
     echo "    hostname: dev$1" >> $OUT
     echo "    volumes:" >> $OUT
     echo '      - '"${SHARED_VOLUME}"':/purple' >> $OUT
-    echo '    command: /opt/docker-internal.sh '"${scan_time}"'' >> $OUT
+    if [ $1 == 1 ]; then
+        echo "    command: python3 /opt/internal.py $1 ${experiment_num} ${scan_time} $z 1" >> $OUT
+    else
+	echo "    command: python3 /opt/internal.py $1 ${experiment_num} ${scan_time} $z 0" >> $OUT
+    fi
     if [ $2 ]; then
         echo "    depends_on:" >> $OUT
         echo "      - dev$2" >> $OUT
