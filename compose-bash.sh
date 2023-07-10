@@ -57,11 +57,7 @@ write_entry () {
     echo "    hostname: dev$1" >> $OUT
     echo "    volumes:" >> $OUT
     echo '      - '"${SHARED_VOLUME}"':/purple' >> $OUT
-    if [ $1 == 1 ]; then
-        echo "    command: python3 /opt/internal.py $1 ${experiment_num} ${scan_time} $z 1" >> $OUT
-    else
-	echo "    command: python3 /opt/internal.py $1 ${experiment_num} ${scan_time} $z 0" >> $OUT
-    fi
+    echo "    command: python3 /opt/internal.py $1 ${experiment_num} ${scan_time} $z 0" >> $OUT
     if [ $2 ]; then
         echo "    depends_on:" >> $OUT
         echo "      - dev$2" >> $OUT
