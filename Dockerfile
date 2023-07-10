@@ -2,7 +2,7 @@
 FROM ubuntu
 
 RUN apt update && apt install iproute2 openssh-server sudo python3 coreutils sshpass tcpdump vim tmux tmuxinator netcat pip docker net-tools -y
-RUN pip install paramiko
+RUN pip install paramiko pexpect
 # ---------user configuration
 RUN echo 'root:password' | chpasswd
 RUN passwd -d root
