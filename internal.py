@@ -5,6 +5,7 @@ import subprocess
 import time
 import pexpect
 from pexpect import popen_spawn
+from pexpect import pxssh
 #import paramiko
 
 if len(sys.argv) < 5:
@@ -21,6 +22,9 @@ port=22
 s_attacker=30
 victimsend=45
 target=int(device_num)+1
+target_ip="172.50.0."+str(target+1)
+
+print(target_ip)
 
 sshtunnel=""
 
@@ -34,10 +38,22 @@ def get_commands(cmdfile):
 
 def ssh_tunnel(target, port):
     if int(target) <= int(devices):
-        tunnel=subprocess.Popen(f"ssh -A -t -p 22 dev{target}", shell=True, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
-        tunnel.communicate(f"python3 /opt/internal.py {target} {experiment_num} {scan_time} {devices} 1".encode())
+        #tunnel=subprocess.Popen(f"ssh -A -t -p 22 dev{target}", shell=True, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
+        #tunnel.communicate(f"python3 /opt/internal.py {target} {experiment_num} {scan_time} {devices} 1".encode())
         #tunnel=pexpect.spawn(f"/usr/bin/ssh -A -t -p 22 dev{target}")
         #tunnel.sendline(f"/usr/bin/python3 /opt/internal.py {target} {experiment_num} {scan_time} {devices} 1")
+        #tunnel = pxssh.pxssh(options={
+        #    "Hostname": "172.50.0."+str(target)+"",
+        #    "StrictHostKeyChecking": "no",
+        #    "IdentityFile": "~/.ssh/id_rsa",
+        #    "UserKnownHostsFile": "/dev/null",
+        #    "User": "root"})
+        tunnel = pxssh.pxssh()
+        tunnel.login(target_ip, "root")
+        tunnel.sendline(f"python3 /opt/internal.py {target} {experiment_num} {scan_time} {devices} 1")
+        #tunnel.sendline("hostname")
+        tunnel.prompt()
+        print(tunnel.before)
         #tunnel.expect("\n", pexpect.EOF)
         #print("Ito Vera")
         #tunnel.stdin.write(f"python3 /opt/internal.py {target} {experiment_num} {scan_time} {devices} 1".encode())
@@ -54,6 +70,9 @@ subprocess.run("service ssh restart", shell=True)
 
 #---The following helps to intialize the execution while starting a tcpdump on dev1, it is a bit hacky right now, investiagte
 #better soultions as well---"
+
+print(target)
+
 if int(device_num) == 1 and int(action) != 1:
     subprocess.run("timeout 10 tcpdump -i eth0 -U -w /purple/tcpdump/"+experiment_num+"/dev"+device_num+".pcap &", shell=True)
     #subprocess.Popen(["ls", "/"])
