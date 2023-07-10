@@ -53,7 +53,7 @@ write_entry () {
     START_TCP_PORT=$(($START_TCP_PORT-1))
     echo "    networks: " >> $OUT
     echo '       '"${NETWORK_NAME}"':' >> $OUT
-    echo "          ipv4_address: 172.50.0.$(($i+1))" >> $OUT
+    echo "          ipv4_address: 172.50.0.$(($1+1))" >> $OUT
     echo "    hostname: dev$1" >> $OUT
     echo "    volumes:" >> $OUT
     echo '      - '"${SHARED_VOLUME}"':/purple' >> $OUT
