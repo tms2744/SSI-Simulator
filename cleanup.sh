@@ -8,15 +8,11 @@ Helpful before a push to github to reduce unneeded data
 comment
 
 
-i=1
-while [ $i -le 25 ]
-do
-    echo "removing folder ${i}"
-    # rm -rf tcpdump/$i
-    sudo rm -rf $(pwd)/tcpdump/$i
+sudo rm -rf $(pwd)/tcpdump
+sudo rm -rf $(pwd)/results
+mkdir $(pwd)/tcpdump
+mkdir $(pwd)/results
 
-    
-    ((i++))
-done 
+
 
 # docker ps -qa|xargs docker rm -f
