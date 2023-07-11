@@ -63,7 +63,7 @@ def ssh_tunnel(target, port):
             if t == int(devices)-1:
                 proxy=proxy+"root@dev"+str(t)
             else:
-                proxy=proxy+"root@dev"+str(t)+", "
+                proxy=proxy+"root@dev"+str(t)+","
             t=t+1
         #subprocess.Popen("ssh -A -t -p 22 root@172.50.0.6", shell=True)
 
@@ -82,7 +82,7 @@ def ssh_tunnel(target, port):
         #        tunnel.login("172.50.0.6", "root")
         #    except pexpect.pxssh.ExceptionPxssh:
         #        pass
-            tunnel = pexpect.popen_spawn.PopenSpawn("ssh -J root@dev2,root@dev3,root@dev4 root@dev5")
+            tunnel = pexpect.popen_spawn.PopenSpawn("ssh -J "+proxy+" root@dev"+devices)
             tunnel.sendline("cp /opt/bob /purple/results/bob")
             #tunnel.expect("\n")
             tunnel.sendline("cp /opt/alice /purple/results/alice")
@@ -127,11 +127,11 @@ else:
     subprocess.run("timeout 10 tcpdump -i eth0 -U -w /purple/tcpdump/"+experiment_num+"/dev"+device_num+".pcap &", shell=True)
     if int(device_num) == int(devices):
         with open("/opt/bob", 'w+') as b:
-            b.write("This is a secret")
+            b.write("This is a secret\n")
         with open("/opt/alice", 'w+') as a:
-            a.write("This is another secret")
+            a.write("This is another secret\n")
         with open("/opt/eve", 'w+') as e:
-            e.write("And rounding out the group")
+            e.write("And rounding out the group\n")
         subprocess.run("ls /opt", shell=True)
     time.sleep(int(scan_time))
 
