@@ -1,0 +1,37 @@
+ 
+Host dev1
+Hostname 172.50.0.2
+StrictHostKeyChecking no
+IdentityFile ~/.ssh/id_rsa
+UserKnownHostsFile=/dev/null
+ProxyJump root@172.50.0.3:22,root@172.50.0.4:22,root@172.50.0.5:22
+User root
+ 
+Host dev2
+Hostname 172.50.0.3
+StrictHostKeyChecking no
+IdentityFile ~/.ssh/id_rsa
+UserKnownHostsFile=/dev/null
+User root
+ 
+Host dev3
+Hostname 172.50.0.4
+StrictHostKeyChecking no
+IdentityFile ~/.ssh/id_rsa
+UserKnownHostsFile=/dev/null
+User root
+ 
+Host dev4
+Hostname 172.50.0.5
+StrictHostKeyChecking no
+IdentityFile ~/.ssh/id_rsa
+UserKnownHostsFile=/dev/null
+User root
+ 
+Host dev5
+Hostname 172.50.0.6
+StrictHostKeyChecking no
+IdentityFile ~/.ssh/id_rsa
+UserKnownHostsFile=/dev/null
+User root
+ 
