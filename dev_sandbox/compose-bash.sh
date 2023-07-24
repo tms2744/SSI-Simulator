@@ -27,6 +27,7 @@ SHARED_VOLUME=$(pwd)
 
 START_SSH_PORT=220$z
 START_TCP_PORT=999$z
+START_HTTP_PORT=800$z
 #iaddr=$1+1
 ipV4="172.50.0.$(($z+1))"
 
@@ -49,15 +50,17 @@ write_entry () {
     # echo '      - "220$1:"' >> docker-compose1.yml
     echo "      - \"${START_SSH_PORT}:22\"" >> $OUT
     echo "      - \"${START_TCP_PORT}:9000\"" >> $OUT
+    echo "      - \"${START_HTTP_PORT}:80\"">> $OUT
     START_SSH_PORT=$(($START_SSH_PORT-1))
     START_TCP_PORT=$(($START_TCP_PORT-1))
+    START_HTTP_PORT=$(($START_HTTP_PORT-1))
     echo "    networks: " >> $OUT
     echo '       '"${NETWORK_NAME}"':' >> $OUT
     echo "          ipv4_address: 172.50.0.$(($1+1))" >> $OUT
     echo "    hostname: dev$1" >> $OUT
     echo "    volumes:" >> $OUT
     echo '      - '"${SHARED_VOLUME}"':/purple' >> $OUT
-    echo "    command: python3 /opt/internal.py $1 ${experiment_num} ${scan_time} $z 0" >> $OUT
+    echo "    command: python3 /opt/test-internal.py $1 ${experiment_num} ${scan_time} $z 0" >> $OUT
     if [ $2 ]; then
         echo "    depends_on:" >> $OUT
         echo "      - dev$2" >> $OUT

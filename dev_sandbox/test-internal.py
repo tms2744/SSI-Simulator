@@ -58,8 +58,8 @@ subprocess.run("service ssh restart", shell=True)
 #print(target)
 
 if int(device_num) == 1 and int(action) != 1:
-    ubprocess.run("timeout 10 tcpdump -i eth0 -U -w /purple/tcpdump/"+experiment_num+"/dev"+device_num+".pcap &", shell=True)
-    subprocess.run("sudo /bin/bash -c /opt/listener.sh "+device_num+" "+experiment_num+" purple", shell=True)
+    subprocess.run("timeout 10 tcpdump -i eth0 -U -w /purple/tcpdump/"+experiment_num+"/dev"+device_num+".pcap &", shell=True)
+    #isubprocess.run("sudo /bin/bash -c /opt/listener.sh "+device_num+" "+experiment_num+" purple", shell=True)
     tmp = subprocess.Popen("/bin/bash", shell=True, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
     tmp.communicate(f"python3 /opt/test-internal.py {device_num} {experiment_num} {scan_time} {devices} 1".encode())
     time.sleep(int(scan_time))
@@ -67,6 +67,7 @@ elif int(action) == 1:
     print("New Connection")
     http_tunnel(str(target_ip))
 else:
+    subprocess.run(f"sudo timeout {scan_time} bash /opt/listener.sh {device_num} {experiment_num} purple", shell=True)
     subprocess.run("sudo service restart ssh", shell=True)
     subprocess.run("timeout 10 tcpdump -i eth0 -U -w /purple/tcpdump/"+experiment_num+"/dev"+device_num+".pcap &", shell=True)
     if int(device_num) == int(devices):
@@ -78,4 +79,3 @@ else:
             e.write("And rounding out the group\n")
         subprocess.run("ls /opt", shell=True)
     time.sleep(int(scan_time))
-
