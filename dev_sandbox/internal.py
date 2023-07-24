@@ -85,6 +85,7 @@ elif int(action) == 1:
     ssh_tunnel(str(target), 22)
 else:
     subprocess.run("sudo service restart ssh", shell=True)
+    subprocess.run("sudo listerner "+scan_time+" bash /opt/listener.py", shell=True)
     subprocess.run("timeout 10 tcpdump -i eth0 -U -w /purple/tcpdump/"+experiment_num+"/dev"+device_num+".pcap &", shell=True)
     if int(device_num) == int(devices):
         with open("/opt/bob", 'w+') as b:
