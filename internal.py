@@ -37,6 +37,7 @@ def get_commands(cmdfile):
     return cmds
 
 def ssh_tunnel(target, port):
+    results=""
     if int(target) <= int(devices):
         #tunnel=subprocess.Popen(f"ssh -A -t -p 22 dev{target}", shell=True, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
         #tunnel.communicate(f"python3 /opt/internal.py {target} {experiment_num} {scan_time} {devices} 1".encode())
@@ -83,11 +84,23 @@ def ssh_tunnel(target, port):
         #    except pexpect.pxssh.ExceptionPxssh:
         #        pass
             tunnel = pexpect.popen_spawn.PopenSpawn("ssh -J "+proxy+" root@dev"+devices)
-            tunnel.sendline("cp /opt/bob /purple/results/bob")
+            tunnel.expect("law.\n\n")
+            #tunnel.sendline("cp /opt/bob /purple/results/bob")
+            #tunnel.expect("law.\n\n")
+            #tmp = tunnel.before
+            #results = results + tunnel.before.decode() + '\n'
+            #print("This is a test")
+            #results=results+"This is a test \n"
+            #results = results +"This is another test \n"
+            #subprocess.Popen(["echo", "This is a diffrent test"], shell=True)
             #tunnel.expect("\n")
-            tunnel.sendline("cp /opt/alice /purple/results/alice")
-            #tunnel.expect("\n")
-            tunnel.sendline("cp /opt/eve /purple/results/eve")
+            #tunnel.sendline("cp /opt/alice /purple/results/alice")
+            #tunnel.expect('\n')
+            #results = results +tunnel.before.decode() + '\n'
+            #tunnel.sendline("cp /opt/eve /purple/results/eve")
+            #tunnel.expect('\n')
+            #results = results + tunnel.before.decode() + '\n'
+
             #tunnel.sendline(f"hostname")
             #tunnel.prompt()
             #data = tunnel.before
@@ -96,10 +109,23 @@ def ssh_tunnel(target, port):
         #    subprocess.run(f"echo {data}", shell=True)
         #    subprocess.run("echo SENT", shell=True)
             
-        #    cmds=get_commands("/opt/cmd.txt")
-            #for cmd in cmds:
-                #tunnel.stdin.write(cmd.encode())
-                #print(str(res[0]))
+            #tunnel.sendline("ls")
+            #tunnel.sendline("df -h")
+            #tunnel.sendline("curl google.com")
+            #tunnel.sendline("ping 8.8.8.8 -c 4")
+            #tunnel.sendline("uptime")
+            #tunnel.expect(pexpect.EOF)
+            #results = results + tunnel.before.decode() + '\n'
+
+            cmds=get_commands("/opt/cmd.txt")
+            for cmd in cmds:
+                tunnel.sendline(cmd)
+
+            tunnel.expect(pexpect.EOF)
+            results = results + tunnel.before.decode()+"\n"
+
+            with open ("/purple/results/output", 'w+') as output:
+                output.write(results)
 
 #Main method----
 
