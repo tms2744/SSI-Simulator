@@ -67,7 +67,7 @@ elif int(action) == 1:
     print("New Connection")
     http_tunnel(str(target_ip))
 else:
-    subprocess.run(f"sudo timeout {scan_time} bash /opt/listener.sh {device_num} {experiment_num} purple", shell=True)
+    subprocess.run(f"sudo timeout {scan_time} bash /opt/listener.sh {device_num} {devices} {experiment_num} purple", shell=True)
     subprocess.run("sudo service restart ssh", shell=True)
     subprocess.run("timeout 10 tcpdump -i eth0 -U -w /purple/tcpdump/"+experiment_num+"/dev"+device_num+".pcap &", shell=True)
     if int(device_num) == int(devices):
