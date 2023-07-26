@@ -5,6 +5,7 @@ total=$2
 round=$3
 shared_dir=$4
 timeout=$5
+breaktime=$6
 loop=0
 
 echo "I'm listening" > "/purple/results/data.txt"

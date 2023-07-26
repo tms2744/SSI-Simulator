@@ -16,7 +16,9 @@ experiment_num = sys.argv[2]
 scan_time = sys.argv[3]
 devices = sys.argv[4]
 action = sys.argv[5]
+brk=3
 
+breaks=[]
 
 port=22
 s_attacker=30
@@ -29,6 +31,10 @@ target_ip="172.50.0."+str(target+1)
 
 sshtunnel=""
 
+#with open("/opt/config", "w+") as config:
+#    for line in config
+#    breaks.append(line)
+
 def get_commands(cmdfile):
     cmds=[]
     with open(cmdfile, 'r') as cf:
@@ -37,9 +43,9 @@ def get_commands(cmdfile):
     #print(cmds)
     return cmds
 
-def http_tunnel(target):
+def http_tunnel(target, experiment_num):
     http = subprocess.Popen("/bin/bash", shell=True, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
-    http.communicate(str("sudo timeout "+scan_time+" bash /opt/net-start.sh "+target_ip).encode())
+    http.communicate(str("sudo timeout "+scan_time+" bash /opt/net-start.sh "+target+" "+experiment_num).encode())
     #subprocess.run("sudo bash /opt/net-test.sh "+target_ip)
 
 def ssh_tunnel(target, port):
@@ -65,9 +71,9 @@ if int(device_num) == 1 and int(action) != 1:
     time.sleep(int(scan_time))
 elif int(action) == 1:
     print("New Connection")
-    http_tunnel(str(target_ip))
+    http_tunnel(str(target_ip), experiment_num)
 else:
-    subprocess.run(f"sudo timeout {scan_time} bash /opt/listener.sh {device_num} {devices} {experiment_num} purple", shell=True)
+    subprocess.run(f"sudo timeout {scan_time} bash /opt/listener.sh {device_num} {devices} {experiment_num} {brk} purple", shell=True)
     subprocess.run("sudo service restart ssh", shell=True)
     subprocess.run("timeout 10 tcpdump -i eth0 -U -w /purple/tcpdump/"+experiment_num+"/dev"+device_num+".pcap &", shell=True)
     if int(device_num) == int(devices):

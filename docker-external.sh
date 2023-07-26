@@ -4,6 +4,7 @@ SCAN_TIME=300
 devices=4
 dir=$(pwd)
 TCP_DIR=${dir}/tcpdump
+RES_DIR=${dir}/results
 networkName="SSID"
 subnet="172.50.0.0/24"
 gateway="172.50.0.254"
@@ -84,6 +85,7 @@ do
 
     echo " [*] making directory: $round"
     sudo mkdir -p ${TCP_DIR}/${round}
+    sudo mkdir -p ${RES_DIR}/${round}
 
     # start up docker containers
     echo "---build---"
