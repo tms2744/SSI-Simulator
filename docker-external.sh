@@ -1,4 +1,4 @@
-#!/bin/bash`
+#!/bin/bash
 TOTAL_ROUNDS=2 
 SCAN_TIME=300
 devices=4
@@ -26,11 +26,12 @@ else
         TOTAL_ROUNDS=2
         SCAN_TIME=300
         devices=4
+	TEST=0
     else
         devices=$1
         SCAN_TIME=$2                                                                                                                                                                                                                                                                                                                                                 
         TOTAL_ROUNDS=$3
-        
+        TEST=$4 
     fi
 fi
 
@@ -70,7 +71,12 @@ do
 
     # create docker-compose.yml script
     #   arg1: count of stepping-stone devices
-    bash compose-bash.sh $devices $round $SCAN_TIME $subnet $gateway $networkName
+    if [ "$TEST" == "1" ]; then
+	echo "alts" 
+	bash alt_compose-bash.sh $devices $round $SCAN_TIME $subnet $gateway $networkName
+    else
+    	bash compose-bash.sh $devices $round $SCAN_TIME $subnet $gateway $networkName
+    fi
 
     echo " [*] Running round $round..."
    
@@ -78,7 +84,7 @@ do
 
     echo " [*] making directory: $round"
     sudo mkdir -p ${TCP_DIR}/${round}
-i
+
     # start up docker containers
     echo "---build---"
     docker compose up --build
