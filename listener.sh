@@ -27,3 +27,5 @@ fi
 #	nc -lk 80 >> "${shared_dir}/results/${round}/net_data${num}.txt"
 #done
 
+
+#Do we need the sepreat breaktime and total values.

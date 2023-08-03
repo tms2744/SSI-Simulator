@@ -72,12 +72,13 @@ do
 
     # create docker-compose.yml script
     #   arg1: count of stepping-stone devices
-    if [ "$TEST" == "1" ]; then
-	echo "alts" 
-	bash alt_compose-bash.sh $devices $round $SCAN_TIME $subnet $gateway $networkName
-    else
-    	bash compose-bash.sh $devices $round $SCAN_TIME $subnet $gateway $networkName
-    fi
+    #if [ "$TEST" == "1" ]; then
+	#echo "alts" 
+	#bash alt_compose-bash.sh $devices $round $SCAN_TIME $subnet $gateway $networkName
+    #else
+    #	bash compose-bash.sh $devices $round $SCAN_TIME $subnet $gateway $networkName
+    #fi
+    bash alt_compose-bash.sh $devices $round $SCAN_TIME $subnet $gateway $TEST $networkName
 
     echo " [*] Running round $round..."
    
