@@ -12,13 +12,13 @@ experiment_num=$2
 scan_time=$3
 subnet=$4
 gateway=$5
-
+tunnel=$6
 
 echo "---scan_time---"
 echo ${scan_time}
 
-if [ $6 ]; then
-     NETWORK_NAME=$6
+if [ $7 ]; then
+     NETWORK_NAME=$7
 else
      NETWORK_NAME="SSID"
 fi
@@ -60,7 +60,7 @@ write_entry () {
     echo "    hostname: dev$1" >> $OUT
     echo "    volumes:" >> $OUT
     echo '      - '"${SHARED_VOLUME}"':/purple' >> $OUT
-    echo "    command: python3 /opt/alt_internal.py $1 ${experiment_num} ${scan_time} $z 0" >> $OUT
+    echo "    command: python3 /opt/alt_internal.py $1 ${experiment_num} ${scan_time} $z 0 ${tunnel}" >> $OUT
     if [ $2 ]; then
         echo "    depends_on:" >> $OUT
         echo "      - dev$2" >> $OUT

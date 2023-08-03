@@ -30,6 +30,7 @@ COPY internal.py /opt/
 COPY alt_internal.py /opt/
 COPY net-start.sh /opt/
 COPY listener.sh /opt/
+COPY ssh-connect.sh /opt/
 #RUN chmod 700 /opt/tmux.sh
 RUN chmod +x /opt/internal.py
 COPY cmd.txt /opt/
