@@ -22,10 +22,8 @@ brk=3
 breaks=[]
 
 port=22
-s_attacker=30
-victimsend=45
-target=int(device_num)+1
-target_ip="172.50.0."+str(target+1)
+target=int(devices)
+target_ip="172.50.0."+str(int(device_num)+1)
 
 #print("This is print "+target_ip)
 #subprocess.Popen(f"echo This is subprocess {target_ip}", shell=True)
