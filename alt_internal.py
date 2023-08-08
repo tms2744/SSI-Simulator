@@ -23,7 +23,8 @@ breaks=[]
 
 port=22
 target=int(devices)
-target_ip="172.50.0."+str(int(device_num)+1)
+step=int(device_num)+1
+target_ip="172.50.0."+str(step+1)
 
 #print("This is print "+target_ip)
 #subprocess.Popen(f"echo This is subprocess {target_ip}", shell=True)
@@ -44,7 +45,7 @@ def get_commands(cmdfile):
 
 def http_tunnel(target, experiment_num):
     http = subprocess.Popen("/bin/bash", shell=True, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
-    http.communicate(str("sudo timeout "+scan_time+" bash /opt/net-start.sh "+target+" "+experiment_num).encode())
+    http.communicate(str("sudo timeout "+scan_time+" bash /opt/net-start.sh "+str(target)+" "+experiment_num).encode())
     #subprocess.run("sudo bash /opt/net-test.sh "+target_ip)
 
 def ssh_tunnel(start, target, port):
@@ -65,15 +66,33 @@ def ssh_tunnel(start, target, port):
 
 
 def build_tunnel(tunnel_type):
+    #For right now aussme the first tunnel is nc
 
-    if tunnel_type == 0:
-        print("SSH TUNNEL")
-        ssh_tunnel(1, target, 22)
-    elif tunnel_type == 1:
-        http_tunnel(target_ip, experiment_num)
-    else:
-        print("Please Select at tunnel")
+    cmd="sudo bash /opt/nt.sh dev2 "+experiment_num
+    i=2
 
+    for tunnel in tunnel_type:
+        if tunnel == "ssh":
+            cmd = cmd+" ssh dev"+str(i)
+        elif tunnel == "nc":
+            cmd = cmd+" /opt/nt.sh dev"+str(i)+" "+experiment_num
+        else:
+            raise UserWarning("please provide appropiately formated sequence")
+        i=i+1
+
+    print(cmd)
+    with open("/purple/results/prelim", 'w+') as prelim:
+        prelim.write(cmd)
+    subprocess.run(cmd, shell=True)
+
+
+    #if tunnel_type == 0:
+    #    print("SSH TUNNEL")
+    #    ssh_tunnel(1, target, 22)
+    #elif tunnel_type == 1:
+    #    http_tunnel(step, experiment_num)
+    #else:
+    #    print("Please Select at tunnel")
 
 
 #+=======Main method=========+
@@ -95,7 +114,7 @@ if int(device_num) == 1 and int(action) != 1:
 elif int(action) == 1:
     print("New Connection")
     #http_tunnel(str(target_ip), experiment_num)
-    build_tunnel(int(tunnel_type))
+    build_tunnel(["ssh", "nc", "ssh", "nc"])
 else:
     subprocess.run(f"sudo timeout {scan_time} bash /opt/listener.sh {device_num} {devices} {experiment_num} {brk} purple", shell=True)
     subprocess.run("sudo service restart ssh", shell=True)

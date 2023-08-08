@@ -16,6 +16,8 @@ tmux send-keys -t mySession.0 "ssh -J ${proxy} ${target} >> /purple/results/${ro
 
 i=0
 
+tmux send-keys -t mySession.0 "hostname" Enter
+
 while [ $i -ne -1 ]
 do
 	sleep_time=$(( $RANDOM % 10 +1 ))
