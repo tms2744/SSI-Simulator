@@ -68,8 +68,9 @@ def ssh_tunnel(start, target, port):
 def build_tunnel(tunnel_type):
     #For right now aussme the first tunnel is nc
 
-    cmd="sudo bash /opt/nt.sh dev2 "+experiment_num
-    i=2
+    #For any tunnel of n>=3 i[0]=1, i[1]=2, i[2]=3, even if i[3]=n. A special cases cases will be added later for n=1 and n=2
+    cmd="sudo bash /opt/nt.sh dev2 "+experiment_num+" 0"
+    i=3
 
     for tunnel in tunnel_type:
         if tunnel == "ssh":
@@ -114,7 +115,7 @@ if int(device_num) == 1 and int(action) != 1:
 elif int(action) == 1:
     print("New Connection")
     #http_tunnel(str(target_ip), experiment_num)
-    build_tunnel(["ssh", "nc", "ssh", "nc"])
+    build_tunnel(["ssh", "nc", "ssh"])
 else:
     subprocess.run(f"sudo timeout {scan_time} bash /opt/listener.sh {device_num} {devices} {experiment_num} {brk} purple", shell=True)
     subprocess.run("sudo service restart ssh", shell=True)

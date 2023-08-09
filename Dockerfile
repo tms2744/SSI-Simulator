@@ -1,7 +1,7 @@
 # ubuntu Dockerfile
 FROM ubuntu
 
-RUN apt update && apt install iproute2 openssh-server sudo python3 coreutils sshpass tcpdump vim tmux tmuxinator netcat pip docker net-tools -y
+RUN apt update && apt install iproute2 openssh-server sudo python3 coreutils sshpass tcpdump vim tmux tmuxinator netcat ncat pip docker net-tools -y
 RUN pip install paramiko pexpect
 # ---------user configuration
 RUN echo 'root:password' | chpasswd
@@ -33,6 +33,7 @@ COPY nt.sh /opt/
 COPY listener.sh /opt/
 COPY ssh-connect.sh /opt/
 #RUN chmod 700 /opt/tmux.sh
+RUN chmod +x /opt/nt.sh
 RUN chmod +x /opt/internal.py
 COPY cmd.txt /opt/
 COPY docker-internal.sh /opt/
