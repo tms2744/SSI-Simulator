@@ -69,14 +69,22 @@ def build_tunnel(tunnel_type):
     #For right now aussme the first tunnel is nc
 
     #For any tunnel of n>=3 i[0]=1, i[1]=2, i[2]=3, even if i[3]=n. A special cases cases will be added later for n=1 and n=2
-    cmd="sudo bash /opt/nt.sh dev2 "+experiment_num+" 0"
+    
+    #This Funtion is currently based on the principle of a nested comd (ssh nc ssh nc) for tunnel interlopability
+    #This Funciton specifcally buildislis a string based on agiven array of what protcol each inter-node tunnel will use
+    #This string is currently just executed, but there should be a third script to handle feeding commands to it (as SSH ahas no
+    #wrapper script
+    cmd="sudo timeout "+scan_time+" bash /opt/nt.sh dev2 "+experiment_num+" 0"
     i=3
 
     for tunnel in tunnel_type:
         if tunnel == "ssh":
             cmd = cmd+" ssh dev"+str(i)
         elif tunnel == "nc":
-            cmd = cmd+" /opt/nt.sh dev"+str(i)+" "+experiment_num
+            if i == int(devices):
+                cmd == cmd+" /opt/nt.sh dev"+str(i)+" "+experiment_num+" 1 /bin/bash"
+            else:
+                cmd = cmd+" /opt/nt.sh dev"+str(i)+" "+experiment_num+" 1"
         else:
             raise UserWarning("please provide appropiately formated sequence")
         i=i+1
