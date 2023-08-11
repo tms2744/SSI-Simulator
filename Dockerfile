@@ -28,11 +28,13 @@ RUN service ssh restart
 # --------docker-external.sh 
 COPY internal.py /opt/
 COPY alt_internal.py /opt/
+COPY launch.sh /opt/
 COPY net-start.sh /opt/
 COPY nt.sh /opt/
 COPY listener.sh /opt/
 COPY ssh-connect.sh /opt/
 #RUN chmod 700 /opt/tmux.sh
+RUN chmod +x /opt/launch.sh
 RUN chmod +x /opt/nt.sh
 RUN chmod +x /opt/internal.py
 COPY cmd.txt /opt/

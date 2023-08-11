@@ -74,17 +74,18 @@ def build_tunnel(tunnel_type):
     #This Funciton specifcally buildislis a string based on agiven array of what protcol each inter-node tunnel will use
     #This string is currently just executed, but there should be a third script to handle feeding commands to it (as SSH ahas no
     #wrapper script
-    cmd="sudo timeout "+scan_time+" bash /opt/nt.sh dev2 "+experiment_num+" 0"
+    cmd="sudo /opt/nt.sh dev2 "+experiment_num
     i=3
 
     for tunnel in tunnel_type:
         if tunnel == "ssh":
             cmd = cmd+" ssh dev"+str(i)
         elif tunnel == "nc":
-            if i == int(devices):
-                cmd == cmd+" /opt/nt.sh dev"+str(i)+" "+experiment_num+" 1 /bin/bash"
-            else:
-                cmd = cmd+" /opt/nt.sh dev"+str(i)+" "+experiment_num+" 1"
+            cmd = cmd + " /opt/nt.sh dev"+str(i)+" "+experiment_num
+            #if i == int(devices):
+            #    cmd == cmd+" /opt/nt.sh dev"+str(i)+" "+experiment_num+" 1 /bin/bash"
+            #else:
+            #    cmd = cmd+" /opt/nt.sh dev"+str(i)+" "+experiment_num+" 1"
         else:
             raise UserWarning("please provide appropiately formated sequence")
         i=i+1
@@ -92,7 +93,7 @@ def build_tunnel(tunnel_type):
     print(cmd)
     with open("/purple/results/prelim", 'w+') as prelim:
         prelim.write(cmd)
-    subprocess.run(cmd, shell=True)
+    subprocess.run(f"sudo timeout {scan_time} /bin/bash /opt/launch.sh {experiment_num} {cmd}", shell=True)
 
 
     #if tunnel_type == 0:
