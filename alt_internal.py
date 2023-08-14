@@ -124,7 +124,7 @@ if int(device_num) == 1 and int(action) != 1:
 elif int(action) == 1:
     print("New Connection")
     #http_tunnel(str(target_ip), experiment_num)
-    build_tunnel(["ssh", "nc", "ssh"])
+    build_tunnel(["nc", "nc", "nc"])
 else:
     subprocess.run(f"sudo timeout {scan_time} bash /opt/listener.sh {device_num} {devices} {experiment_num} {brk} purple", shell=True)
     subprocess.run("sudo service restart ssh", shell=True)
