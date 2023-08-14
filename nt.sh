@@ -9,6 +9,8 @@ i=0
 
 echo "ID is: $id, Command is: printf \"${cmd}\\n\" | nc -N ${target} 80" >> "/purple/results/${round}/commands.txt"
 
+#printf "${cmd}\n" | ncat $target 80
+
 printf "${cmd}\n" | ncat -o "/purple/results/${round}/$HOSTNAME.txt" $target 80
 
 #printf "${cmd}\n" | nc -N $target 80 >> "/purple/results/${round}/results.txt"
