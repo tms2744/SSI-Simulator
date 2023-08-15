@@ -74,8 +74,11 @@ def build_tunnel(tunnel_type):
     #This Funciton specifcally buildislis a string based on agiven array of what protcol each inter-node tunnel will use
     #This string is currently just executed, but there should be a third script to handle feeding commands to it (as SSH ahas no
     #wrapper script
-    cmd="sudo /opt/nt.sh dev2 "+experiment_num
-    i=3
+    
+    #cmd="sudo /opt/nt.sh dev2 "+experiment_num
+    cmd=""
+    #cmd="sudo ssh dev2"
+    i=2
 
     for tunnel in tunnel_type:
         if tunnel == "ssh":
@@ -93,7 +96,7 @@ def build_tunnel(tunnel_type):
     print(cmd)
     with open("/purple/results/prelim", 'w+') as prelim:
         prelim.write(cmd)
-    subprocess.run(f"sudo timeout {scan_time} /bin/bash /opt/launch.sh {experiment_num} {cmd}", shell=True)
+    subprocess.run(f"sudo timeout {scan_time} /bin/bash /opt/launch.sh {experiment_num} {cmd} > /purple/results/{experiment_num}/results.txt", shell=True)
 
 
     #if tunnel_type == 0:
@@ -124,7 +127,7 @@ if int(device_num) == 1 and int(action) != 1:
 elif int(action) == 1:
     print("New Connection")
     #http_tunnel(str(target_ip), experiment_num)
-    build_tunnel(["nc", "nc", "nc"])
+    build_tunnel(["nc", "nc", "nc", "nc"])
 else:
     subprocess.run(f"sudo timeout {scan_time} bash /opt/listener.sh {device_num} {devices} {experiment_num} {brk} purple", shell=True)
     subprocess.run("sudo service restart ssh", shell=True)
