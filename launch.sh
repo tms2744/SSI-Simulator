@@ -1,16 +1,34 @@
 #!/bin/bash
 
 round=$1
-cmd= ${@:2}
+#alt_cmd=$2
+chain_length=$2
+#cmds= ${@:3}
+params=${@:3}
+cmds=( $params)
+c=0
+cc=3
 i=0
 
+#echo "${alt_cmd}" >> "/purple/results/${round}/alt_cmds.txt"
 echo "${cmd}" >> "/purple/results/${round}/cmds.txt"
 
 tmux new -d -s mySession
 
 tmux send-keys -t mySession.0 "/bin/bash -i" Enter
 
-tmux send-keys -t mySession.0 "${cmd}" Enter
+tmux send-keys -t mySession.0 "${cmds}" Enter
+
+while [ $c -ne $chain_length ]
+do
+	cmd=${@:$cc:3}
+	echo "Round ${c}: cc=${cc}, cc+3=$(($cc+3)): ${cmd}" >> "/purple/results/${round}/exec"
+	tmux send-keys -t mySession.0 "${cmd}" Enter
+	c=$(($c+1))
+	cc=$(($cc+3))
+done
+
+tmux send-keys -t mySession.0 "hostname" Enter
 
 while [ $i -ne -1 ]
 do

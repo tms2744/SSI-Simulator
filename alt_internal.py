@@ -3,10 +3,11 @@
 import sys
 import subprocess
 import time
+import random
 import pexpect
 from pexpect import popen_spawn
 from pexpect import pxssh
-#import paramiko
+
 
 if len(sys.argv) < 6:
     raise UserWarning("Please use six or more parameters")
@@ -77,35 +78,36 @@ def build_tunnel(tunnel_type):
     
     #cmd="sudo /opt/nt.sh dev2 "+experiment_num
     cmd=""
+    alt_cmd=""
+
     #cmd="sudo ssh dev2"
     i=2
 
     for tunnel in tunnel_type:
         if tunnel == "ssh":
-            cmd = cmd+" ssh dev"+str(i)
+            cmd=cmd+" ssh dev"+str(i)+" -4"
         elif tunnel == "nc":
-            cmd = cmd + " /opt/nt.sh dev"+str(i)+" "+experiment_num
-            #if i == int(devices):
-            #    cmd == cmd+" /opt/nt.sh dev"+str(i)+" "+experiment_num+" 1 /bin/bash"
-            #else:
-            #    cmd = cmd+" /opt/nt.sh dev"+str(i)+" "+experiment_num+" 1"
+            cmd=cmd+" ncat dev"+str(i)+" 80"
         else:
             raise UserWarning("please provide appropiately formated sequence")
         i=i+1
 
     print(cmd)
+    tunnel_length=len(tunnel_type)
     with open("/purple/results/prelim", 'w+') as prelim:
         prelim.write(cmd)
-    subprocess.run(f"sudo timeout {scan_time} /bin/bash /opt/launch.sh {experiment_num} {cmd} > /purple/results/{experiment_num}/results.txt", shell=True)
+        prelim.write(str(alt_cmd))
+    subprocess.run(f"sudo timeout {scan_time} /bin/bash /opt/launch.sh {experiment_num} {tunnel_length} {cmd} > /purple/results/{experiment_num}/results.txt", shell=True)
 
+def tunnel_randomizer(tunnel_length, tunnel_types):
+    
+    c=0
+    stages=[]
 
-    #if tunnel_type == 0:
-    #    print("SSH TUNNEL")
-    #    ssh_tunnel(1, target, 22)
-    #elif tunnel_type == 1:
-    #    http_tunnel(step, experiment_num)
-    #else:
-    #    print("Please Select at tunnel")
+    while c<tunnel_length:
+        stages.append(random.choice(tunnel_types))
+        c=c+1
+    return stages
 
 
 #+=======Main method=========+
@@ -119,7 +121,7 @@ subprocess.run("service ssh restart", shell=True)
 #print(target)
 
 if int(device_num) == 1 and int(action) != 1:
-    subprocess.run("timeout 10 tcpdump -i eth0 -U -w /purple/tcpdump/"+experiment_num+"/dev"+device_num+".pcap &", shell=True)
+    subprocess.run("timeout "+scan_time+" tcpdump -i eth0 -U -w /purple/tcpdump/"+experiment_num+"/dev"+device_num+".pcap &", shell=True)
     #isubprocess.run("sudo /bin/bash -c /opt/listener.sh "+device_num+" "+experiment_num+" purple", shell=True)
     tmp = subprocess.Popen("/bin/bash", shell=True, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
     tmp.communicate(f"python3 /opt/alt_internal.py {device_num} {experiment_num} {scan_time} {devices} 1 {tunnel_type}".encode())
@@ -127,11 +129,13 @@ if int(device_num) == 1 and int(action) != 1:
 elif int(action) == 1:
     print("New Connection")
     #http_tunnel(str(target_ip), experiment_num)
-    build_tunnel(["nc", "nc", "nc", "nc"])
+    tunnel=tunnel_randomizer(4, ["nc", "ssh"])
+    build_tunnel(tunnel)
+    #build_tunnel(["nc", "ssh", "nc", "ssh"])
 else:
     subprocess.run(f"sudo timeout {scan_time} bash /opt/listener.sh {device_num} {devices} {experiment_num} {brk} purple", shell=True)
     subprocess.run("sudo service restart ssh", shell=True)
-    subprocess.run("timeout 10 tcpdump -i eth0 -U -w /purple/tcpdump/"+experiment_num+"/dev"+device_num+".pcap &", shell=True)
+    subprocess.run("timeout "+scan_time+" tcpdump -i eth0 -U -w /purple/tcpdump/"+experiment_num+"/dev"+device_num+".pcap &", shell=True)
     if int(device_num) == int(devices):
         with open("/opt/bob", 'w+') as b:
             b.write("This is a secret\n")
