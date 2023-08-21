@@ -28,10 +28,14 @@ do
 	cc=$(($cc+3))
 done
 
-tmux send-keys -t mySession.0 "hostname" Enter
+sudo tmux send-keys -t mySession.0 "hostname" Enter
+
+#tc qdisc add dev eth0 root netem delay 100ms
+
 
 while [ $i -ne -1 ]
 do
+#	sudo tc qdisc add dev eth0 root netem delay 100ms
 	sleep_time=$(( $RANDOM % 10 + 1 ))
 	cmd2=$(shuf -n 1 /purple/cmd.txt)
 	tmux send-keys -t mySession.0 "${cmd2}" Enter

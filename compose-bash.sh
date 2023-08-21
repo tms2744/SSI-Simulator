@@ -13,12 +13,11 @@ scan_time=$3
 subnet=$4
 gateway=$5
 
-
 echo "---scan_time---"
 echo ${scan_time}
 
-if [ $6 ]; then
-     NETWORK_NAME=$6
+if [ $7 ]; then
+     NETWORK_NAME=$7
 else
      NETWORK_NAME="SSID"
 fi
@@ -27,6 +26,7 @@ SHARED_VOLUME=$(pwd)
 
 START_SSH_PORT=220$z
 START_TCP_PORT=999$z
+START_HTTP_PORT=800$z
 #iaddr=$1+1
 ipV4="172.50.0.$(($z+1))"
 
@@ -49,8 +49,10 @@ write_entry () {
     # echo '      - "220$1:"' >> docker-compose1.yml
     echo "      - \"${START_SSH_PORT}:22\"" >> $OUT
     echo "      - \"${START_TCP_PORT}:9000\"" >> $OUT
+    echo "      - \"${START_HTTP_PORT}:80\"">> $OUT
     START_SSH_PORT=$(($START_SSH_PORT-1))
     START_TCP_PORT=$(($START_TCP_PORT-1))
+    START_HTTP_PORT=$(($START_HTTP_PORT-1))
     echo "    networks: " >> $OUT
     echo '       '"${NETWORK_NAME}"':' >> $OUT
     echo "          ipv4_address: 172.50.0.$(($1+1))" >> $OUT

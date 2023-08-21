@@ -3,30 +3,38 @@
 import sys
 import subprocess
 import time
+import random
 import pexpect
 from pexpect import popen_spawn
 from pexpect import pxssh
-#import paramiko
 
-if len(sys.argv) < 5:
-    raise UserWarning("Please use two or more parameters")
+
+if len(sys.argv) < 6:
+    raise UserWarning("Please use six or more parameters")
 
 device_num = sys.argv[1]
 experiment_num = sys.argv[2]
 scan_time = sys.argv[3]
 devices = sys.argv[4]
 action = sys.argv[5]
+#tunnel_type = sys.argv[6]
+brk=3
 
+breaks=[]
 
 port=22
-s_attacker=30
-victimsend=45
-target=int(device_num)+1
-target_ip="172.50.0."+str(target+1)
+target=int(devices)
+step=int(device_num)+1
+target_ip="172.50.0."+str(step+1)
 
-print(target_ip)
+#print("This is print "+target_ip)
+#subprocess.Popen(f"echo This is subprocess {target_ip}", shell=True)
 
 sshtunnel=""
+
+#with open("/opt/config", "w+") as config:
+#    for line in config
+#    breaks.append(line)
 
 def get_commands(cmdfile):
     cmds=[]
@@ -36,98 +44,51 @@ def get_commands(cmdfile):
     #print(cmds)
     return cmds
 
-def ssh_tunnel(target, port):
-    results=""
-    if int(target) <= int(devices):
-        #tunnel=subprocess.Popen(f"ssh -A -t -p 22 dev{target}", shell=True, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
-        #tunnel.communicate(f"python3 /opt/internal.py {target} {experiment_num} {scan_time} {devices} 1".encode())
-        #tunnel=pexpect.spawn(f"/usr/bin/ssh -A -t -p 22 dev{target}")
-        #tunnel.sendline(f"/usr/bin/python3 /opt/internal.py {target} {experiment_num} {scan_time} {devices} 1")
-        #tunnel = pxssh.pxssh(options={
-        #    "Hostname": "172.50.0."+str(target)+"",
-        #    "StrictHostKeyChecking": "no",
-        #    "IdentityFile": "~/.ssh/id_rsa",
-        #    "UserKnownHostsFile": "/dev/null",
-        #    "User": "root"})
-        #tunnel = pxssh.pxssh()
-        #tunnel.login(target_ip, "root")
-        #tunnel.sendline(f"python3 /opt/internal.py {target} {experiment_num} {scan_time} {devices} 1")
-        #tunnel.sendline("hostname")
-        #tunnel.prompt()
-        #print(tunnel.before)
-        #tunnel.expect("\n", pexpect.EOF)
-        #print("Ito Vera")
-        #tunnel.stdin.write(f"python3 /opt/internal.py {target} {experiment_num} {scan_time} {devices} 1".encode())
-        proxy=""
-        t=int(target)
-        while t < int(devices):
-            if t == int(devices)-1:
-                proxy=proxy+"root@dev"+str(t)
-            else:
-                proxy=proxy+"root@dev"+str(t)+","
-            t=t+1
-        #subprocess.Popen("ssh -A -t -p 22 root@172.50.0.6", shell=True)
+def build_tunnel(tunnel_type):
+    #For right now aussme the first tunnel is nc
 
-        if int(device_num) == 1:
-            #tunnel=subprocess.Popen("ssh -J root@dev2,root@dev3,root@dev4 root@dev5", shell=True, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
-            #tunnel.communicate("hostname".encode())
-        #    tunnel=pxssh.pxssh(options={
-        #        "Hostname": "172.50.0.2",
-        #        "StrictHostKeyChecking": "no",
-        #        "IdentityFile": "~/.ssh/id_rsa",
-        #        "UserKnownHostsFile": "/dev/null",
-        #        "User": "root",
-        #        "ProxyJump": "root@172.50.0.3,root@172.50.0.4,root@172.50.0.5"})
-        #    tunnel=pxssh.pxssh()
-        #    try:
-        #        tunnel.login("172.50.0.6", "root")
-        #    except pexpect.pxssh.ExceptionPxssh:
-        #        pass
-            tunnel = pexpect.popen_spawn.PopenSpawn("ssh -J "+proxy+" root@dev"+devices)
-            tunnel.expect("law.\n\n")
-            #tunnel.sendline("cp /opt/bob /purple/results/bob")
-            #tunnel.expect("law.\n\n")
-            #tmp = tunnel.before
-            #results = results + tunnel.before.decode() + '\n'
-            #print("This is a test")
-            #results=results+"This is a test \n"
-            #results = results +"This is another test \n"
-            #subprocess.Popen(["echo", "This is a diffrent test"], shell=True)
-            #tunnel.expect("\n")
-            #tunnel.sendline("cp /opt/alice /purple/results/alice")
-            #tunnel.expect('\n')
-            #results = results +tunnel.before.decode() + '\n'
-            #tunnel.sendline("cp /opt/eve /purple/results/eve")
-            #tunnel.expect('\n')
-            #results = results + tunnel.before.decode() + '\n'
+    #For any tunnel of n>=3 i[0]=1, i[1]=2, i[2]=3, even if i[3]=n. A special cases cases will be added later for n=1 and n=2
+    
+    #This Funtion is currently based on the principle of a nested comd (ssh nc ssh nc) for tunnel interlopability
+    #This Funciton specifcally buildislis a string based on agiven array of what protcol each inter-node tunnel will use
+    #This string is currently just executed, but there should be a third script to handle feeding commands to it (as SSH ahas no
+    #wrapper script
+    
+    #cmd="sudo /opt/nt.sh dev2 "+experiment_num
+    cmd=""
+    alt_cmd=""
 
-            #tunnel.sendline(f"hostname")
-            #tunnel.prompt()
-            #data = tunnel.before
-            #with open ("/purple/results", 'w+') as results:
-            #    results.write(data.decode())
-        #    subprocess.run(f"echo {data}", shell=True)
-        #    subprocess.run("echo SENT", shell=True)
-            
-            #tunnel.sendline("ls")
-            #tunnel.sendline("df -h")
-            #tunnel.sendline("curl google.com")
-            #tunnel.sendline("ping 8.8.8.8 -c 4")
-            #tunnel.sendline("uptime")
-            #tunnel.expect(pexpect.EOF)
-            #results = results + tunnel.before.decode() + '\n'
+    #cmd="sudo ssh dev2"
+    i=2
 
-            cmds=get_commands("/opt/cmd.txt")
-            for cmd in cmds:
-                tunnel.sendline(cmd)
+    for tunnel in tunnel_type:
+        if tunnel == "ssh":
+            cmd=cmd+" ssh dev"+str(i)+" -4"
+        elif tunnel == "nc":
+            cmd=cmd+" ncat dev"+str(i)+" 80"
+        else:
+            raise UserWarning("please provide appropiately formated sequence")
+        i=i+1
 
-            tunnel.expect(pexpect.EOF)
-            results = results + tunnel.before.decode()+"\n"
+    print(cmd)
+    tunnel_length=len(tunnel_type)
+    with open("/purple/results/prelim", 'w+') as prelim:
+        prelim.write(cmd)
+        prelim.write(str(alt_cmd))
+    subprocess.run(f"sudo timeout {scan_time} /bin/bash /opt/launch.sh {experiment_num} {tunnel_length} {cmd} > /purple/results/{experiment_num}/results.txt", shell=True)
 
-            with open ("/purple/results/output", 'w+') as output:
-                output.write(results)
+def tunnel_randomizer(tunnel_length, tunnel_types):
+    
+    c=0
+    stages=[]
 
-#Main method----
+    while c<tunnel_length:
+        stages.append(random.choice(tunnel_types))
+        c=c+1
+    return stages
+
+
+#+=======Main method=========+
 
 subprocess.run("service ssh restart", shell=True)
 #subprocess.run("timeout 10 tcpdump -i eth0 -U -w /purple/tcpdump/"+experiment_num+"/dev"+device_num+".pcap &", shell=True)
@@ -135,22 +96,24 @@ subprocess.run("service ssh restart", shell=True)
 #---The following helps to intialize the execution while starting a tcpdump on dev1, it is a bit hacky right now, investiagte
 #better soultions as well---"
 
-print(target)
+#print(target)
 
 if int(device_num) == 1 and int(action) != 1:
-    subprocess.run("timeout 10 tcpdump -i eth0 -U -w /purple/tcpdump/"+experiment_num+"/dev"+device_num+".pcap &", shell=True)
-    #subprocess.Popen(["ls", "/"])
-    #subprocess.Popen(["ls", "/opt"])
+    subprocess.run("timeout "+scan_time+" tcpdump -i eth0 -U -w /purple/tcpdump/"+experiment_num+"/dev"+device_num+".pcap &", shell=True)
+    #isubprocess.run("sudo /bin/bash -c /opt/listener.sh "+device_num+" "+experiment_num+" purple", shell=True)
     tmp = subprocess.Popen("/bin/bash", shell=True, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
     tmp.communicate(f"python3 /opt/internal.py {device_num} {experiment_num} {scan_time} {devices} 1".encode())
     time.sleep(int(scan_time))
-    #subprocess.run(["python3", "/opt/internal.py", str(target), str(experiment_num), str(scan_time), str(devices), "1"], shell=True)
-    #subprocess.Popen("timeout 10 tcpdump -i eth0 -U -w /purple/tcpdump/"+experiment_num+"/dev"+device_num+".pcap &", shell=True)
 elif int(action) == 1:
-    ssh_tunnel(str(target), 22)
+    print("New Connection")
+    #http_tunnel(str(target_ip), experiment_num)
+    tunnel=tunnel_randomizer(4, ["nc", "ssh"])
+    build_tunnel(tunnel)
+    #build_tunnel(["nc", "ssh", "nc", "ssh"])
 else:
+    subprocess.run(f"sudo timeout {scan_time} bash /opt/listener.sh {device_num} {devices} {experiment_num} {brk} purple", shell=True)
     subprocess.run("sudo service restart ssh", shell=True)
-    subprocess.run("timeout 10 tcpdump -i eth0 -U -w /purple/tcpdump/"+experiment_num+"/dev"+device_num+".pcap &", shell=True)
+    subprocess.run("timeout "+scan_time+" tcpdump -i eth0 -U -w /purple/tcpdump/"+experiment_num+"/dev"+device_num+".pcap &", shell=True)
     if int(device_num) == int(devices):
         with open("/opt/bob", 'w+') as b:
             b.write("This is a secret\n")
@@ -160,4 +123,3 @@ else:
             e.write("And rounding out the group\n")
         subprocess.run("ls /opt", shell=True)
     time.sleep(int(scan_time))
-
