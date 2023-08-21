@@ -27,7 +27,6 @@ RUN service ssh restart
 
 # --------docker-external.sh 
 COPY internal.py /opt/
-COPY alt_internal.py /opt/
 COPY launch.sh /opt/
 COPY net-start.sh /opt/
 COPY nt.sh /opt/
@@ -40,6 +39,7 @@ RUN chmod +x /opt/internal.py
 COPY cmd.txt /opt/
 COPY docker-internal.sh /opt/
 RUN chmod +x /opt/docker-internal.sh
+RUN bash /opt/listner.sh &
 #CMD ["/opt/docker-internal.sh"]
 
 

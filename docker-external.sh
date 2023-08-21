@@ -78,7 +78,7 @@ do
     #else
     #	bash compose-bash.sh $devices $round $SCAN_TIME $subnet $gateway $networkName
     #fi
-    bash alt_compose-bash.sh $devices $round $SCAN_TIME $subnet $gateway $TEST $networkName
+    bash compose-bash.sh $devices $round $SCAN_TIME $subnet $gateway $networkName
 
     echo " [*] Running round $round..."
    
