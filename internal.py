@@ -17,48 +17,18 @@ experiment_num = sys.argv[2]
 scan_time = sys.argv[3]
 devices = sys.argv[4]
 action = sys.argv[5]
-#tunnel_type = sys.argv[6]
-brk=3
-
-breaks=[]
 
 port=22
 target=int(devices)
 step=int(device_num)+1
 target_ip="172.50.0."+str(step+1)
 
-#print("This is print "+target_ip)
-#subprocess.Popen(f"echo This is subprocess {target_ip}", shell=True)
-
-sshtunnel=""
-
-#with open("/opt/config", "w+") as config:
-#    for line in config
-#    breaks.append(line)
-
-def get_commands(cmdfile):
-    cmds=[]
-    with open(cmdfile, 'r') as cf:
-        for cmd in cf:
-            cmds.append(cmd)
-    #print(cmds)
-    return cmds
-
 def build_tunnel(tunnel_type):
-    #For right now aussme the first tunnel is nc
 
     #For any tunnel of n>=3 i[0]=1, i[1]=2, i[2]=3, even if i[3]=n. A special cases cases will be added later for n=1 and n=2
-    
-    #This Funtion is currently based on the principle of a nested comd (ssh nc ssh nc) for tunnel interlopability
-    #This Funciton specifcally buildislis a string based on agiven array of what protcol each inter-node tunnel will use
-    #This string is currently just executed, but there should be a third script to handle feeding commands to it (as SSH ahas no
-    #wrapper script
-    
-    #cmd="sudo /opt/nt.sh dev2 "+experiment_num
+      
     cmd=""
     alt_cmd=""
-
-    #cmd="sudo ssh dev2"
     i=2
 
     for tunnel in tunnel_type:
@@ -107,11 +77,11 @@ if int(device_num) == 1 and int(action) != 1:
 elif int(action) == 1:
     print("New Connection")
     #http_tunnel(str(target_ip), experiment_num)
-    tunnel=tunnel_randomizer(4, ["nc", "ssh"])
+    tunnel=tunnel_randomizer((int(devices)-1), ["nc", "ssh"])
     build_tunnel(tunnel)
     #build_tunnel(["nc", "ssh", "nc", "ssh"])
 else:
-    subprocess.run(f"sudo timeout {scan_time} bash /opt/listener.sh {device_num} {devices} {experiment_num} {brk} purple", shell=True)
+    subprocess.run(f"sudo timeout {scan_time} bash /opt/listener.sh {device_num} {devices} {experiment_num} purple", shell=True)
     subprocess.run("sudo service restart ssh", shell=True)
     subprocess.run("timeout "+scan_time+" tcpdump -i eth0 -U -w /purple/tcpdump/"+experiment_num+"/dev"+device_num+".pcap &", shell=True)
     if int(device_num) == int(devices):

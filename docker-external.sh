@@ -27,12 +27,10 @@ else
         TOTAL_ROUNDS=2
         SCAN_TIME=300
         devices=4
-	TEST=0
     else
         devices=$1
-        SCAN_TIME=$2                                                                                                                                                                                                                                                                                                                                                 
-        TOTAL_ROUNDS=$3
-        TEST=$4 
+        SCAN_TIME=$2
+	TOTAL_ROUNDS=$3
     fi
 fi
 
@@ -71,13 +69,6 @@ do
     echo $round > round.txt
 
     # create docker-compose.yml script
-    #   arg1: count of stepping-stone devices
-    #if [ "$TEST" == "1" ]; then
-	#echo "alts" 
-	#bash alt_compose-bash.sh $devices $round $SCAN_TIME $subnet $gateway $networkName
-    #else
-    #	bash compose-bash.sh $devices $round $SCAN_TIME $subnet $gateway $networkName
-    #fi
     bash compose-bash.sh $devices $round $SCAN_TIME $subnet $gateway $networkName
 
     echo " [*] Running round $round..."
