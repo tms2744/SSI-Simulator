@@ -30,7 +30,7 @@ done
 
 sudo tmux send-keys -t mySession.0 "hostname" Enter
 
-#tc qdisc add dev eth0 root netem delay 100ms
+#tc qdisc add dev eth0 root netem delay 500ms
 
 
 while [ $i -ne -1 ]
