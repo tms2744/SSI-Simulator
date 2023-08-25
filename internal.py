@@ -4,9 +4,6 @@ import sys
 import subprocess
 import time
 import random
-import pexpect
-from pexpect import popen_spawn
-from pexpect import pxssh
 
 
 if len(sys.argv) < 6:
@@ -61,12 +58,9 @@ def tunnel_randomizer(tunnel_length, tunnel_types):
 #+=======Main method=========+
 
 subprocess.run("service ssh restart", shell=True)
-#subprocess.run("timeout 10 tcpdump -i eth0 -U -w /purple/tcpdump/"+experiment_num+"/dev"+device_num+".pcap &", shell=True)
 
 #---The following helps to intialize the execution while starting a tcpdump on dev1, it is a bit hacky right now, investiagte
 #better soultions as well---"
-
-#print(target)
 
 if int(device_num) == 1 and int(action) != 1:
     subprocess.run("timeout "+scan_time+" tcpdump -i eth0 -U -w /purple/tcpdump/"+experiment_num+"/dev"+device_num+".pcap &", shell=True)
@@ -76,7 +70,6 @@ if int(device_num) == 1 and int(action) != 1:
     time.sleep(int(scan_time))
 elif int(action) == 1:
     print("New Connection")
-    #http_tunnel(str(target_ip), experiment_num)
     tunnel=tunnel_randomizer((int(devices)-1), ["nc", "ssh"])
     build_tunnel(tunnel)
     #build_tunnel(["nc", "ssh", "nc", "ssh"])
