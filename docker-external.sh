@@ -52,12 +52,6 @@ echo "Rounds: $TOTAL_ROUNDS"
 echo ""
 sleep 15
 
-# creates uniform device number/ central value for all dependent files
-echo $devices > dev-num.txt
-
-# creates automated docker-compose.yml
-#bash compose-bash.sh $devices
-
 # makes uniform scan_time vars in .env for all experiements
 sed -i "1c\\SCAN_TIME=$SCAN_TIME" .env
 
@@ -90,8 +84,6 @@ do
 
     # stop and delete all active containers
     docker compose down
-    #docker stop $(docker ps -a -q)
-    #docker rm $(docker ps -a -q)
     sleep 10
     # increase sleep for overnight
 
@@ -104,11 +96,6 @@ sleep 5
 finalround=$(cat round.txt)
 
 echo " [*] docker-external.sh finished -- $finalround experiments complete"
-
-
-
-
-
 
 # look at how to set things up for commmands
 # replace static commands - select random command - randomly sample send & recieve

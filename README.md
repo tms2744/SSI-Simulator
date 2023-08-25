@@ -2,7 +2,7 @@
 
 This project is an improvement of previous works on Stepping Stone Intrusion Detection (SSID). Automation is the focus to mantain flexibilty as well as seemless experiment integrity for each round of samples. Using Docker, this project simulates network activity as if there were stepping stone attacks occuring, all while collecting network traffic samples. 
 
-This project can create an unlimited size data set on SSID to be using for machine learning applications.
+This project can be used to create data sets on SSID to be using for machine learning applications.
 
 # Documentation
 
@@ -12,7 +12,7 @@ This project can create an unlimited size data set on SSID to be using for machi
 
 USE WITH CAUTION
 
-AS OF THE MOST RECENT COMMIT THIS README IS OUT OF DATE, THE README WILL BE UPDATEDED SOO TO REFLECT CHANGES TO THE PROJECT STUCTUREi**
+This README is often out of date while in devlopment**
 
 
 ## Running
@@ -23,7 +23,6 @@ requirements:
 * change value in /SSH_MODEL/.env to YOUR repo dir
 
 terminal:
-$ cd SSH_MODEL  
 $ chmod 700 docker-external.sh  
 $ sudo ./docker-external.sh  
 ** enter prompt values**
@@ -33,16 +32,14 @@ program takes care of everything else!
 (1) docker-external.sh -->   
 (2) compose-bash.sh & ssh-config.sh -->  
 (3) docker-compose.yml -->  
-(4) docker-internal.sh -->  
-(5) tmux.sh  
---> = triggers script  
+(4) internal.py-->  
+(5) listener.sh & launch.sh   
 
 
 ## Files & Uses
 docker-external.sh : 
 * takes user input for devices, rounds, and scan time
 * Manages experiment loop and docker container management
-* sets values in round.txt, dev-num.txt, scan_time.txt and proxy.txt
 
 compose-bash.sh : 
 * generates a dynamic docker-compose.yml based on configured options for each experiment
@@ -51,25 +48,31 @@ compose-bash.sh :
 ssh-config.sh
 * generates dynamic ssh config file for each docker container for each experiment
 
-docker-internal.sh
-* manages the internal commands within docker containers
-* sets up scans using tcpdump, first device always attacker container
+internal.py
+* Manges internal functions for each container
+* Starts tcpdump on every host, start listener.sh on all but the first contianer, and starts launch.sh on the first container
 
-tmux.sh
-* internal commands for container 1 (attacker)
-* runs tmux session to run command equilvent bytes sequences through ssh tunnel across stepping stones
-* triggers aliases on final stepping stone which triggers response behavior
+listener.sh
+* A simple script to start a ncat listener.
+* Can be expended in the future for other commands and ports
+
+launch.sh
+* Handels builidng the tunnel, and sending data through it
+* Uses a tmux loop to construct the tunnel by laaunching new connections as shells in the next hop opern'
+* Uses tmux again to send commands at random intervals through the tunnel to the target for an indefinte period of time
 
 ## Available Models
 
-- SSH Tunnel: SSH_MODEL
-    * purely SSH tunnel
-- TCP SSH Tunnel: TCP_SSH_MODEL
-    * SSH tunnel with TCP chain at random interval between hosts
+Available protocols for tunnel segments:
+
+- SSH
+    * ssh $target -4: a simple ipv4 ssh tunnel to the given target, resvolved with confimration information on every system.
+- NCAT
+    * Uses the ncat to utility to create a connection to port 80 as quasi-http traffic
 
 Future:
-    - HTTP Tunnel (netcat/socat)
-    - FTP Tunnel
+    - ncat on other ports
+    - Realistic HTTP, DNS traffic
 
 
 ## Management Commands
