@@ -8,11 +8,8 @@ This project can be used to create data sets on SSID to be using for machine lea
 
 ##IMPORTANT NOTE
 
-**THIS IS THE DEV BRANCH OF THE PROJECT AT ANY GIVEN MOMENT THE CODE MAY NOT BE FUNCTIONING AND THE DOCUMENTATION MAY BE INCOMPLETE
 
-USE WITH CAUTION
-
-This README is often out of date while in devlopment**
+**This README is has not yet been fully updated, but largely reflects all major changes**
 
 
 ## Running
